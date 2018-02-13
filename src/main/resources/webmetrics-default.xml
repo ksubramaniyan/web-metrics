@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webmetric xmlns="http://www.webmetrics.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.webmetrics.com webmetrics.xsd"
+	enabled="true">
+
+	<!-- Default URIs are ignored, provided here as sample only -->
+	<whiteListedUris>
+		<whiteListedUri>
+			<!-- notice two URIs are used for single display, the metrics are merged -->
+			<uri>/uri/sample1</uri>
+			<uri>/uri/sample1/option</uri>
+			<display>sample1/display</display>
+		</whiteListedUri>
+		<whiteListedUri>
+			<uri>/uri/sample2</uri>
+			<display>sample2</display>
+		</whiteListedUri>
+	</whiteListedUris>
+	<histogram>50,100,500,1000</histogram>
+	<domain>com.default.monitor</domain>
+	<!-- Default consumers are ignored, provided here as sample only -->
+	<consumers enabled="true">
+		<idField>authID</idField>
+		<idFieldScope>header</idFieldScope>
+		<consumer id="com123" />
+		<consumer id="com456" alias="consumer_456" />
+		<consumer id="awkward" enabled="false" />
+		<consumer id="com_123.456" />
+		<consumer id="com_123.456$789" />
+	</consumers>
+	<metrics-params>
+		<metrics-param>
+			<name>skipContextName</name>
+			<value>true</value>
+		</metrics-param>
+		<metrics-param>
+			<name>uriPatternVersion</name>
+			<value>2</value>
+		</metrics-param>
+		<metrics-param>
+			<name>enableNonWhiteListedUri</name>
+			<value>
+				true
+			</value>
+		</metrics-param>
+		<metrics-param>
+			<name>enableHistogram</name>
+			<value>true</value>
+		</metrics-param>
+	</metrics-params>
+</webmetric>

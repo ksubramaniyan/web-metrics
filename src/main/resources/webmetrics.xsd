@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.webmetrics.com" xmlns="http://www.webmetrics.com"
+	elementFormDefault="qualified">
+
+	<!-- Current version: 1.601 -->
+
+	<xs:element name="webmetric">
+		<xs:complexType>
+			<xs:sequence>
+				<!-- list of URIs and/or URI patterns to white list, non-white listed URIs all go under the "other" metric if enabled -->
+				<!-- if URI list is not provided, all metrics go under the "site" metric -->
+				<xs:element name="whiteListedUris" maxOccurs="1" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="whiteListedUri" maxOccurs="unbounded" minOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<!-- example of non-pattern uri entry: /mycontext/myapi -->
+										<!-- example of pattern uri entries: -->
+										<!-- /mycontext/my*api/? -->
+										<!-- /mycontext/*myapi/? -->
+										<!-- /mycontext/myapi/* -->
+										<!-- /mycontext/*/myapi/* -->
+										<!-- /mycontext/*/my*api/* -->
+										<!-- NOTE: multiple URIs can be used for single display, the metrics merged -->
+										<xs:element name="uri" type="xs:string" maxOccurs="unbounded" minOccurs="1" nillable="false" />
+										<!-- example of 1 level display name -->
+										<!-- myMetricName -->
+										<!-- /myMetricName -->
+										<!-- example of multi-level display name -->
+										<!-- myMetricName/add -->
+										<!-- /myMetricName/add -->
+										<!-- /myMetricName/add/subtract -->
+										<!-- NOTE: display is verified for uniqueness, case-insensitive -->
+										<xs:element name="display" type="xs:string" maxOccurs="1" minOccurs="1" nillable="false" />
+										<xs:element name="histogram" type="xs:string" maxOccurs="1" minOccurs="0" default="50,100,500,1000" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<!-- defines bucket ranges for histogram, values are boundaries between buckets, response times in milliseconds -->
+				<xs:element name="histogram" type="xs:string" maxOccurs="1" minOccurs="0" default="50,100,500,1000" />
+				<!-- domain for JMX beans, usually not modified (i.e. use default AS IS) -->
+				<xs:element name="domain" type="xs:string" maxOccurs="1" minOccurs="0" default="com.hd.monitor" nillable="false" />
+				<xs:element name="consumers" maxOccurs="1" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="idField" type="xs:string" maxOccurs="1" minOccurs="1" nillable="false" />
+							<xs:element name="idFieldScope" maxOccurs="1" minOccurs="1" nillable="false">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="header" />
+										<xs:enumeration value="cookie" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="consumer" maxOccurs="unbounded" minOccurs="1">
+								<xs:complexType>
+									<xs:attribute name="id" type="xs:string" use="required" />
+									<xs:attribute name="alias" type="xs:string" use="optional" />
+									<xs:attribute name="enabled" type="xs:boolean" use="optional" default="true" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="enabled" type="xs:boolean" use="optional" />
+					</xs:complexType>
+				</xs:element>
+				<!-- various metric options, some are boolean, some string, some integer -->
+				<xs:element name="metrics-params" maxOccurs="1" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="metrics-param" maxOccurs="unbounded" minOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="name">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<!-- if true app context name is skipped when generating metric name from URI, default is true xs:boolean -->
+													<xs:enumeration value="skipContextName" />
+													<!-- patterns may have version 1 or 2, where 2 is default, sample for 2 is above xs:integer -->
+													<xs:enumeration value="uriPatternVersion" />
+													<!-- if true non-white listed URIs are enabled and placed under "other", default is true xs:boolean -->
+													<xs:enumeration value="enableNonWhiteListedUri" />
+													<!-- default true xs: boolean -->
+													<xs:enumeration value="enableHistogram" />
+													<!-- if true histogram for response status (2xx, 4xx, 5xx response codes) buckets is enabled, default true xs:boolean -->
+													<xs:enumeration value="enableStatus" />
+													<!-- name for metric for non-white listed URIs, no default true xs:string -->
+													<xs:enumeration value="nonWhiteListName" />
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<!-- value type depends on name -->
+										<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="1" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<!-- root node attribute that enables or disables the entire metric logic, required (no default) -->
+			<xs:attribute name="enabled" type="xs:boolean" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>
